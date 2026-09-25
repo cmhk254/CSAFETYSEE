@@ -1,0 +1,34 @@
+import subprocess
+import sys
+import ctypes
+
+def is_admin():
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin()
+    except:
+        return False
+
+def activate_family_filter():
+    # Cloudflare Family DNS IPs (Blocks Malware + Explicit Content)
+    primary_dns = "1.1.1.3"
+    secondary_dns = "1.0.0.3"
+    
+    print("[*] Activating system-wide content filter...")
+    
+    # Command to change DNS on Windows via PowerShell
+    cmd_primary = f"Set-DnsClientServerAddress -InterfaceAlias 'Wi-Fi', 'Ethernet' -ServerAddresses ({primary_dns},{secondary_dns}) -ErrorAction SilentlyContinue"
+    
+    try:
+        subprocess.run(["powershell", "-Command", cmd_primary], check=True)
+        print("[+] Success! Dangerous and explicit content is now filtered on this device.")
+        print("[i] Note: You may need to restart your browser for changes to take effect.")
+    except subprocess.CalledProcessError as e:
+        print(f"[-] Failed to set DNS: {e}")
+
+if __name__ == "__main__":
+    if not is_admin():
+        print("[-] Error: This script must be run with Administrator privileges.")
+        # Re-run the script with admin rights
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", sys.executable, " ".join(sys.argv), None, 1)
+    else:
+        activate_family_filter()
