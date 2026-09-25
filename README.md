@@ -1,0 +1,1 @@
+A lightweight Python script that activates a network-level shield to block malware, adult content, and explicit websites on your Windows device. It achieves this safely by routing your internet traffic through Cloudflare's Family DNS (1.1.1.3), which automatically enforces SafeSearch on major search engines and blocks known dangerous domains.
